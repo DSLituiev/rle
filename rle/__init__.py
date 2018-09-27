@@ -74,5 +74,6 @@ def decode(buffer_, shape=None):
 
 def encode(x):
     "encodes a binary array into a byte sequence using RLE"
+    x = np.asarray(x).ravel()
     encoded_array = np.asarray(_encode(x), dtype=np.uint32)
     return encoded_array.tobytes()
