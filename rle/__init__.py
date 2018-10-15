@@ -59,7 +59,7 @@ def _decode(stream):
         out.append(symbol)
     return out
 
-def decode(buffer_, shape=None, ratio=None):
+def decode(buffer_, shape=None, ratio=None, order='C'):
     """encodes a byte sequence into a boolean array using RLE.
     Arguments:
     - buffer           -- a binary buffer
@@ -67,7 +67,7 @@ def decode(buffer_, shape=None, ratio=None):
     - ratio [optional] -- output aspect ratio (shape will be calculated accordingly)
     """
     encoded_array = np.frombuffer(buffer_, dtype=np.uint32)
-    decoded = np.asarray(_decode(encoded_array), dtype=bool)
+    decoded = np.asarray(_decode(encoded_array), dtype=bool, order=order)
     if ratio is not None:
         length = len(decoded)
         h = int(np.round(np.sqrt(length/ ratio)))
@@ -76,7 +76,10 @@ def decode(buffer_, shape=None, ratio=None):
         shape = (h,w)
 
     if shape is not None:
-        return decoded.reshape(shape)
+        if order =='C':
+            return decoded.reshape(shape)
+        else:
+            return np.asarray(decoded.reshape(shape), order=order)
     else:
         return decoded
 
